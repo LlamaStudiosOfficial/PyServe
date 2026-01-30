@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h2>PyServe</h2>
+        <a class="active" href="/">Home</a>
+        <a href="/server">Dashboard</a>
+    </div>
+
+    <div class="main">
+        <h1>Welcome to PyServe</h1>
+
+        <p>
+            PyServe is a local, open‑source console/web app for sharing files
+            with any device on the same network.
+        </p>
+
+        <h2>How to add files</h2>
+        <p>
+            Place files inside the <b>/assets</b> folder or upload them from the dashboard.
+        </p>
+
+        <h2>How to access PyServe</h2>
+        <p>
+            Run <code>python PyServe.py</code> and open the shown address on any device
+            connected to the same Wi‑Fi network.
+        </p>
+
+        <a href="/server" class="upload-btn">Open File Dashboard</a>
+    </div>
+
+</body>
+</html>

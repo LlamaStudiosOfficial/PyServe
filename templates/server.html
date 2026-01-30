@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h2>PyServe</h2>
+        <a href="/">Home</a>
+        <a class="active" href="/server">Dashboard</a>
+    </div>
+
+    <div class="main">
+        <h1>File Dashboard</h1>
+
+        <form id="upload-form" action="/upload" method="POST" enctype="multipart/form-data">
+            <label class="upload-btn">
+                Browse…
+                <input type="file" name="file" onchange="document.getElementById('upload-form').submit()">
+            </label>
+            <input type="hidden" name="device_id" id="device_id">
+        </form>
+
+        <div id="cards"></div>
+    </div>
+
+    <!-- Download Modal -->
+    <div class="modal-bg" id="modal-bg">
+        <div class="modal">
+            <h3>Download Warning</h3>
+            <p class="modal-text">
+                Files downloaded from this server may contain viruses or malware.
+                Only download files if you trust the source.
+            </p>
+
+            <div class="modal-buttons">
+                <button class="yes" id="modal-yes">Download</button>
+                <button class="no" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal-bg" id="delete-modal-bg">
+        <div class="modal">
+            <h3>Delete File?</h3>
+            <p class="modal-text">
+                This action cannot be undone. Enter your delete password to confirm.
+            </p>
+            <input type="password" id="delete-password" placeholder="Enter password"
+                   style="width: 100%; padding: 8px; margin-bottom: 15px; border-radius: 6px; border: 1px solid #ccc;">
+
+            <div class="modal-buttons">
+                <button class="yes" id="delete-yes">Delete</button>
+                <button class="no" onclick="closeDeleteModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Password Modal -->
+    <div class="modal-bg" id="pw-modal-bg">
+        <div class="modal">
+            <h3>Warning: Save this password somewhere safe, if you lose it you will not be able to delete the file you uploaded</h3>
+            <p class="modal-text">
+                Your delete password is:
+                <span id="pw-text" style="font-weight:bold;"></span>
+                <button id="pw-copy" type="button">Copy</button>
+            </p>
+
+            <div class="modal-buttons">
+                <button class="yes" type="button" onclick="closePwModal()">OK</button>
+                <button class="no" type="button" onclick="closePwModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let pendingDownload = null;
+        let pendingDelete = null;
+        let currentFiles = [];
+
+        /* DEVICE ID: platform-random.hidden */
+        (function ensureDeviceId() {
+        let id = localStorage.getItem("pyserve_device_id");
+        if (!id) {
+        const platform = navigator.platform.replace(/\s+/g, "_");
+        const key = Math.random().toString(36).substring(2, 8).toLowerCase();
+        id = `${platform}-${key}.hidden`;
+        localStorage.setItem("pyserve_device_id", id);
+        }
+        document.getElementById("device_id").value = id;
+        })();
+
+        /* DOWNLOAD MODAL */
+        function openModal(url) {
+        pendingDownload = url;
+        document.getElementById("modal-bg").style.display = "flex";
+        }
+
+        function closeModal() {
+        pendingDownload = null;
+        document.getElementById("modal-bg").style.display = "none";
+        }
+
+        document.getElementById("modal-yes").onclick = () => {
+        if (pendingDownload) window.location = pendingDownload;
+        closeModal();
+        };
+
+        /* DELETE MODAL */
+        function openDeleteModal(filename) {
+        pendingDelete = filename;
+        document.getElementById("delete-password").value = "";
+        document.getElementById("delete-modal-bg").style.display = "flex";
+        }
+
+        function closeDeleteModal() {
+        pendingDelete = null;
+        document.getElementById("delete-modal-bg").style.display = "none";
+        }
+
+        document.getElementById("delete-yes").onclick = () => {
+        const pw = document.getElementById("delete-password").value.trim();
+        if (!pendingDelete || !pw) return;
+
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = "/delete/" + pendingDelete;
+
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "password";
+        input.value = pw;
+        form.appendChild(input);
+
+        document.body.appendChild(form);
+        form.submit();
+        closeDeleteModal();
+        };
+
+        /* PASSWORD MODAL */
+        function openPwModal(password) {
+        if (!password) return;
+        document.getElementById("pw-text").textContent = password;
+        document.getElementById("pw-modal-bg").style.display = "flex";
+        }
+
+        function closePwModal() {
+        document.getElementById("pw-modal-bg").style.display = "none";
+        }
+
+        const pwCopyBtn = document.getElementById("pw-copy");
+
+        pwCopyBtn.addEventListener("click", () => {
+            const pw = document.getElementById("pw-text").textContent.trim();
+            if (!pw) return;
+
+            // Modern API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(pw)
+                    .then(() => {
+                        pwCopyBtn.textContent = "Copied!";
+                        setTimeout(() => pwCopyBtn.textContent = "Copy", 1500);
+                    })
+                    .catch(() => fallbackCopy(pw));
+            } else {
+                // Fallback for older Safari / iPad
+                fallbackCopy(pw);
+            }
+        });
+
+        function fallbackCopy(text) {
+            const temp = document.createElement("input");
+            temp.value = text;
+            document.body.appendChild(temp);
+            temp.select();
+            try {
+                document.execCommand("copy");
+            } catch (e) {
+                console.error("Copy failed", e);
+            }
+            document.body.removeChild(temp);
+            pwCopyBtn.textContent = "Copied!";
+            setTimeout(() => pwCopyBtn.textContent = "Copy", 1500);
+        }
+
+
+        /* RENDER CARDS */
+        function renderCards(files) {
+        const container = document.getElementById("cards");
+        const myId = localStorage.getItem("pyserve_device_id");
+
+        const same =
+        currentFiles.length === files.length &&
+        currentFiles.every((f, i) =>
+        f.name === files[i].name &&
+        f.size === files[i].size &&
+        (f.meta.uploader || "") === (files[i].meta.uploader || "") &&
+        (f.meta.ip || "") === (files[i].meta.ip || "")
+        );
+
+        if (same) return;
+
+        currentFiles = files;
+        container.innerHTML = "";
+
+        files.forEach(file => {
+        const uploader = file.meta.uploader || "Unknown";
+        const ip = file.meta.ip || "Unknown";
+        const size = (file.size / 1024).toFixed(1) + " KB";
+
+        const uploaderHTML =
+        uploader === myId
+        ? `<span style="color:#3498db; font-weight:bold;">${uploader}</span>`
+        : uploader;
+
+        container.innerHTML += `
+        <div class="card">
+        <h2>${file.name}</h2>
+        <p>Size: ${size}</p>
+        <p>Uploaded by: ${uploaderHTML}</p>
+        <p>IP Address: ${ip}</p>
+
+        <button class="download-btn" onclick="openModal('/download/${file.name}')">Download</button>
+        <button class="delete-btn" onclick="openDeleteModal('${file.name}')">Delete</button>
+        </div>
+        `;
+        });
+        }
+
+        /* LIVE REFRESH */
+        async function refresh() {
+        const res = await fetch("/filelist");
+        const data = await res.json();
+        renderCards(data);
+        }
+
+        setInterval(refresh, 3000);
+        refresh();
+
+        /* SHOW PASSWORD MODAL IF pw PARAM PRESENT */
+        (function checkPwParam() {
+        const params = new URLSearchParams(window.location.search);
+        const pw = params.get("pw");
+        if (pw) {
+        openPwModal(pw);
+        const url = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, "", url);
+        }
+        })();
+    </script>
+
+</body>
+</html>

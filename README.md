@@ -30,10 +30,11 @@ Your own uploads are highlighted in **blue**.
 ## 🚀 Getting Started
 
 > [!TIP]
-> If you want to get started fast, use the pre-builts from the releases page.
+> If you want to get started fast, use the pre-builts from the releases page and run the **executable** in a folder.
+> The folder `assets` ***must*** exsist with a meta.json with the folowing contense: ```{}```
 
 
-### 1. Install dependencies
+### 📦 1. Install dependencies
 PyServe requires these dependencies:
 - Flask
 
@@ -42,19 +43,37 @@ Install the dependencies by running this command:
 pip install flask
 ```
 
-### 2. Run the server
+### 📂 2. Create nesseserry files/folders
+
+Folder structure:
+```
+MyFolder/
+assets/
+├─ meta.json
+app.py
+```
+
+> [!IMPORTANT]
+> `meta.json` ***must*** contain this contents:
+> `{}`
+
+
+
+### 🖥️ 3. Run the server
 
 ```bash
 python app.py
 ```
 
-### 3. Access PyServe
+### 🚪 4. Access PyServe
 
-Open the address shown in the console. This is usually `http://<your-local-ip>:5000`.
+Open the **address shown in the console**.Look for: `Running on http://`. The address is usually `http://<your-local-ip>:5000`.
 To find you ip run the command `ipconfig`.
 
-**Any device on the** ***same*** **Wi‑Fi network** can access the PyServe server.
-### Security:
+---
+
+**Any device on the** ***same*** **Wi‑Fi network** can access the **PyServe server**.
+### 🔒 Security:
 When a file is uploaded, the client sends its device ID.
 The server generates a password to stop abuse by deleting each others' files.
 This prevents unauthorized deletion on **shared PyServe Server**.

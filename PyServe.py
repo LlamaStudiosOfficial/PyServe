@@ -1,7 +1,19 @@
+import sys
 import os
 import json
 import random
 from flask import Flask, render_template, send_from_directory, request, redirect, url_for, jsonify
+
+if getattr(sys, 'frozen', False):
+    # Running as .exe
+    base_path = sys._MEIPASS
+else:
+    # Running from source
+    base_path = os.path.abspath(".")
+
+template_folder = os.path.join(base_path, "templates")
+static_folder = os.path.join(base_path, "static")
+
 
 app = Flask(__name__)
 

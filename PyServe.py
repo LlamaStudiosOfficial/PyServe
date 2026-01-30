@@ -15,7 +15,8 @@ template_folder = os.path.join(base_path, "templates")
 static_folder = os.path.join(base_path, "static")
 
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder=template_folder, static_folder=static_folder)
+
 
 ASSET_FOLDER = "assets"
 META_FILE = os.path.join(ASSET_FOLDER, "meta.json")

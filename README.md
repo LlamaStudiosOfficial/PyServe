@@ -41,14 +41,19 @@ pip install flask
 
 ### 📂 2. Add nesseserry files/folders
 
-Download and extract the folders and place them next to the .py file
+Download the repo using **git CLI**:
+```git
+git clone https://github.com/LlamaStudiosOfficial/PyServe.git
+```
+or download directly:
 
-[folders.zip](https://github.com/LlamaStudiosOfficial/PyServe/raw/refs/heads/main/folders.zip)
+[download repo](https://github.com/LlamaStudiosOfficial/PyServe/archive/refs/heads/main.zip)
+
 
 ### 🖥️ 3. Run the server
 
 ```bash
-python app.py
+python PyServe.py
 ```
 
 ### 🚪 4. Access PyServe

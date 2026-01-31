@@ -13,10 +13,7 @@ It runs entirely on LAN so it does ***not*** go to any servers.
 
 - 📁 File Upload & Download
 - 🔐 Secure Delete System
-> Every uploaded file receives a **unique delete password**:
-> Password shown **only once** to the uploader  
-> Required to delete the file  
-> Prevents other users on the network from deleting your uploads  
+
 
 ### 🖥️ Per‑Device Identification
 Each device is assigned a persistent ID:
@@ -76,7 +73,7 @@ To find you ip run the command `ipconfig`.
 **Any device on the** ***same*** **Wi‑Fi network** can access the **PyServe server**.
 ### 🔒 Security:
 When a file is uploaded, the client sends its device ID.
-The server generates a password to stop abuse by deleting each others' files.
+The server ***only*** lets the person who uploaded the file delete it.
 This prevents unauthorized deletion on **shared PyServe Server**.
 </details>
 

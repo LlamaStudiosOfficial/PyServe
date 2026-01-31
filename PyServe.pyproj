@@ -29,8 +29,14 @@
     <Folder Include="templates\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include=".gitignore" />
     <Content Include="assets\hello.txt" />
     <Content Include="assets\meta.json" />
+    <Content Include="build.bat" />
+    <Content Include="LICENSE" />
+    <Content Include="PyServe.slnx" />
+    <Content Include="PyServe.spec" />
+    <Content Include="README.md" />
     <Content Include="static\style.css" />
     <Content Include="templates\index.html" />
     <Content Include="templates\server.html" />

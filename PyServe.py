@@ -23,20 +23,8 @@ os.makedirs(ASSET_FOLDER, exist_ok=True)
 
 
 # ---------------------------------------------------------
-# Utility functions
+# Metadata helpers
 # ---------------------------------------------------------
-def rot19(s: str) -> str:
-    out = []
-    for c in s:
-        if "a" <= c <= "z":
-            out.append(chr((ord(c) - 97 + 19) % 26 + 97))
-        elif "A" <= c <= "Z":
-            out.append(chr((ord(c) - 65 + 19) % 26 + 65))
-        else:
-            out.append(c)
-    return "".join(out)
-
-
 def save_meta(data):
     with open(META_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4)
@@ -46,6 +34,7 @@ def load_meta():
     if not os.path.exists(META_FILE):
         save_meta({})
         return {}
+
     try:
         with open(META_FILE, "r", encoding="utf-8") as f:
             content = f.read().strip()
@@ -84,8 +73,7 @@ def server():
             }
         })
 
-    pw = request.args.get("pw")
-    return render_template("server.html", title="Server", files=file_info, pw=pw)
+    return render_template("server.html", title="Server", files=file_info)
 
 
 @app.route("/upload", methods=["POST"])
@@ -96,18 +84,28 @@ def upload_file():
     if not file or file.filename == "":
         return redirect(url_for("server"))
 
-    filename = file.filename
-    file.save(os.path.join(ASSET_FOLDER, filename))
+    # Prevent overwriting existing files
+    original = file.filename
+    name, ext = os.path.splitext(original)
+    final_name = original
+    counter = 1
 
+    while os.path.exists(os.path.join(ASSET_FOLDER, final_name)):
+        final_name = f"{name} ({counter}){ext}"
+        counter += 1
+
+    # Save file
+    file.save(os.path.join(ASSET_FOLDER, final_name))
+
+    # Save metadata
     meta = load_meta()
-    meta[filename] = {
+    meta[final_name] = {
         "uploader": device_id,
         "ip": request.remote_addr
     }
-
     save_meta(meta)
 
-    return redirect(url_for("server", pw=password))
+    return redirect(url_for("server"))
 
 
 @app.route("/delete/<filename>", methods=["POST"])

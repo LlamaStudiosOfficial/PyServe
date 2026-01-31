@@ -39,23 +39,11 @@ Install the dependencies by running this command:
 pip install flask
 ```
 
-### 📂 2. Create nesseserry files/folders
+### 📂 2. Add nesseserry files/folders
 
-Folder structure:
-```
-MyFolder/
-assets/
-├─ meta.json
-app.py
-```
+Download and extract the folders and place them next to the .py file
 
-`meta.json` ***must*** contain this contents by default: 
-```json
-{}
-```
-
-
-
+[folders.zip](https://github.com/LlamaStudiosOfficial/PyServe/raw/refs/heads/main/folders.zip)
 
 ### 🖥️ 3. Run the server
 

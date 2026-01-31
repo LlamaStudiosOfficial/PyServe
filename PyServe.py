@@ -99,14 +99,12 @@ def upload_file():
     filename = file.filename
     file.save(os.path.join(ASSET_FOLDER, filename))
 
-    password = rot19(device_id) + str(random.randint(1, 256))
-
     meta = load_meta()
     meta[filename] = {
         "uploader": device_id,
-        "ip": request.remote_addr,
-        "password": password
+        "ip": request.remote_addr
     }
+
     save_meta(meta)
 
     return redirect(url_for("server", pw=password))
@@ -116,9 +114,10 @@ def upload_file():
 def delete_file(filename):
     meta = load_meta()
     stored = meta.get(filename, {})
-    submitted_pw = request.form.get("password", "")
+    current_device = request.form.get("device_id")
 
-    if not stored or stored.get("password") != submitted_pw:
+    # Only the uploader can delete
+    if not stored or stored.get("uploader") != current_device:
         return redirect(url_for("server"))
 
     path = os.path.join(ASSET_FOLDER, filename)

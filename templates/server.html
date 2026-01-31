@@ -44,43 +44,8 @@
         </div>
     </div>
 
-    <!-- Delete Modal -->
-    <div class="modal-bg" id="delete-modal-bg">
-        <div class="modal">
-            <h3>Delete File?</h3>
-            <p class="modal-text">
-                This action cannot be undone. Enter your delete password to confirm.
-            </p>
-            <input type="password" id="delete-password" placeholder="Enter password"
-                   style="width: 100%; padding: 8px; margin-bottom: 15px; border-radius: 6px; border: 1px solid #ccc;">
-
-            <div class="modal-buttons">
-                <button class="yes" id="delete-yes">Delete</button>
-                <button class="no" onclick="closeDeleteModal()">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Upload Password Modal -->
-    <div class="modal-bg" id="pw-modal-bg">
-        <div class="modal">
-            <h3>Warning: Save this password somewhere safe, if you lose it you will not be able to delete the file you uploaded</h3>
-            <p class="modal-text">
-                Your delete password is:
-                <span id="pw-text" style="font-weight:bold;"></span>
-                <button id="pw-copy" type="button">Copy</button>
-            </p>
-
-            <div class="modal-buttons">
-                <button class="yes" type="button" onclick="closePwModal()">OK</button>
-                <button class="no" type="button" onclick="closePwModal()">Close</button>
-            </div>
-        </div>
-    </div>
-
     <script>
         let pendingDownload = null;
-        let pendingDelete = null;
         let currentFiles = [];
 
         /* DEVICE ID: platform-random.hidden */
@@ -111,83 +76,21 @@
         closeModal();
         };
 
-        /* DELETE MODAL */
-        function openDeleteModal(filename) {
-        pendingDelete = filename;
-        document.getElementById("delete-password").value = "";
-        document.getElementById("delete-modal-bg").style.display = "flex";
-        }
-
-        function closeDeleteModal() {
-        pendingDelete = null;
-        document.getElementById("delete-modal-bg").style.display = "none";
-        }
-
-        document.getElementById("delete-yes").onclick = () => {
-        const pw = document.getElementById("delete-password").value.trim();
-        if (!pendingDelete || !pw) return;
-
+        /* DELETE (no password — uploader only) */
+        function deleteFile(filename) {
         const form = document.createElement("form");
         form.method = "POST";
-        form.action = "/delete/" + pendingDelete;
+        form.action = "/delete/" + filename;
 
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = "password";
-        input.value = pw;
-        form.appendChild(input);
+        const id = document.createElement("input");
+        id.type = "hidden";
+        id.name = "device_id";
+        id.value = localStorage.getItem("pyserve_device_id");
 
+        form.appendChild(id);
         document.body.appendChild(form);
         form.submit();
-        closeDeleteModal();
-        };
-
-        /* PASSWORD MODAL */
-        function openPwModal(password) {
-        if (!password) return;
-        document.getElementById("pw-text").textContent = password;
-        document.getElementById("pw-modal-bg").style.display = "flex";
         }
-
-        function closePwModal() {
-        document.getElementById("pw-modal-bg").style.display = "none";
-        }
-
-        const pwCopyBtn = document.getElementById("pw-copy");
-
-        pwCopyBtn.addEventListener("click", () => {
-            const pw = document.getElementById("pw-text").textContent.trim();
-            if (!pw) return;
-
-            // Modern API
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(pw)
-                    .then(() => {
-                        pwCopyBtn.textContent = "Copied!";
-                        setTimeout(() => pwCopyBtn.textContent = "Copy", 1500);
-                    })
-                    .catch(() => fallbackCopy(pw));
-            } else {
-                // Fallback for older Safari / iPad
-                fallbackCopy(pw);
-            }
-        });
-
-        function fallbackCopy(text) {
-            const temp = document.createElement("input");
-            temp.value = text;
-            document.body.appendChild(temp);
-            temp.select();
-            try {
-                document.execCommand("copy");
-            } catch (e) {
-                console.error("Copy failed", e);
-            }
-            document.body.removeChild(temp);
-            pwCopyBtn.textContent = "Copied!";
-            setTimeout(() => pwCopyBtn.textContent = "Copy", 1500);
-        }
-
 
         /* RENDER CARDS */
         function renderCards(files) {
@@ -218,6 +121,11 @@
         ? `<span style="color:#3498db; font-weight:bold;">${uploader}</span>`
         : uploader;
 
+        const deleteBtn =
+        uploader === myId
+        ? `<button class="delete-btn" onclick="deleteFile('${file.name}')">Delete</button>`
+        : "";
+
         container.innerHTML += `
         <div class="card">
         <h2>${file.name}</h2>
@@ -226,7 +134,7 @@
         <p>IP Address: ${ip}</p>
 
         <button class="download-btn" onclick="openModal('/download/${file.name}')">Download</button>
-        <button class="delete-btn" onclick="openDeleteModal('${file.name}')">Delete</button>
+        ${deleteBtn}
         </div>
         `;
         });
@@ -241,17 +149,6 @@
 
         setInterval(refresh, 3000);
         refresh();
-
-        /* SHOW PASSWORD MODAL IF pw PARAM PRESENT */
-        (function checkPwParam() {
-        const params = new URLSearchParams(window.location.search);
-        const pw = params.get("pw");
-        if (pw) {
-        openPwModal(pw);
-        const url = window.location.origin + window.location.pathname;
-        window.history.replaceState({}, "", url);
-        }
-        })();
     </script>
 
 </body>

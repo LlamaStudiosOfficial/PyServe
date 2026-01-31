@@ -24,15 +24,14 @@ Each device is assigned a persistent ID:
 <platform>-<random>.hidden
 ```
 Your own uploads are highlighted in **blue**.
-
----
-
-## 🚀 Getting Started
-
 > [!TIP]
 > If you want to get started fast, use the pre-builts from the releases page and run the **executable** in a folder.
 > The folder `assets` ***must*** exsist with a meta.json with the folowing contense: ```{}```
+<details>
 
+<summary>Installing PyServe</summary>
+
+## 🚀 Getting Started
 
 ### 📦 1. Install dependencies
 PyServe requires these dependencies:
@@ -53,9 +52,11 @@ assets/
 app.py
 ```
 
-> [!IMPORTANT]
-> `meta.json` ***must*** contain this contents:
-> `{}`
+`meta.json` ***must*** contain this contents by default: 
+```json
+{}
+```
+
 
 
 
@@ -77,6 +78,7 @@ To find you ip run the command `ipconfig`.
 When a file is uploaded, the client sends its device ID.
 The server generates a password to stop abuse by deleting each others' files.
 This prevents unauthorized deletion on **shared PyServe Server**.
+</details>
 
 ### 📝 License
 

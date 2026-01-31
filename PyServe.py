@@ -1,29 +1,30 @@
-import sys
 import os
 import json
 import random
+import sys
 from flask import Flask, render_template, send_from_directory, request, redirect, url_for, jsonify
 
+# ---------------------------------------------------------
+# PyInstaller compatibility
+# ---------------------------------------------------------
 if getattr(sys, 'frozen', False):
-    # Running as .exe
-    base_path = sys._MEIPASS
+    BASE_PATH = sys._MEIPASS
 else:
-    # Running from source
-    base_path = os.path.abspath(".")
+    BASE_PATH = os.path.abspath(".")
 
-template_folder = os.path.join(base_path, "templates")
-static_folder = os.path.join(base_path, "static")
+TEMPLATE_FOLDER = os.path.join(BASE_PATH, "templates")
+STATIC_FOLDER = os.path.join(BASE_PATH, "static")
+ASSET_FOLDER = os.path.join(BASE_PATH, "assets")
 
+app = Flask(__name__, template_folder=TEMPLATE_FOLDER, static_folder=STATIC_FOLDER)
 
-app = Flask(__name__, template_folder=template_folder, static_folder=static_folder)
-
-
-ASSET_FOLDER = "assets"
 META_FILE = os.path.join(ASSET_FOLDER, "meta.json")
-
 os.makedirs(ASSET_FOLDER, exist_ok=True)
 
 
+# ---------------------------------------------------------
+# Utility functions
+# ---------------------------------------------------------
 def rot19(s: str) -> str:
     out = []
     for c in s:
@@ -51,11 +52,14 @@ def load_meta():
             if not content:
                 return {}
             return json.loads(content)
-    except json.JSONDecodeError:
+    except:
         save_meta({})
         return {}
 
 
+# ---------------------------------------------------------
+# Routes
+# ---------------------------------------------------------
 @app.route("/")
 def index():
     return render_template("index.html", title="Home")
@@ -71,14 +75,13 @@ def server():
         path = os.path.join(ASSET_FOLDER, f)
         size = os.path.getsize(path)
         m = meta.get(f, {})
-        public_meta = {
-            "uploader": m.get("uploader"),
-            "ip": m.get("ip"),
-        }
         file_info.append({
             "name": f,
             "size": size,
-            "meta": public_meta,
+            "meta": {
+                "uploader": m.get("uploader"),
+                "ip": m.get("ip")
+            }
         })
 
     pw = request.args.get("pw")
@@ -89,6 +92,7 @@ def server():
 def upload_file():
     file = request.files.get("file")
     device_id = request.form.get("device_id") or "unknown-xxxxxx.hidden"
+
     if not file or file.filename == "":
         return redirect(url_for("server"))
 
@@ -101,7 +105,7 @@ def upload_file():
     meta[filename] = {
         "uploader": device_id,
         "ip": request.remote_addr,
-        "password": password,
+        "password": password
     }
     save_meta(meta)
 
@@ -143,18 +147,20 @@ def filelist():
         path = os.path.join(ASSET_FOLDER, f)
         size = os.path.getsize(path)
         m = meta.get(f, {})
-        public_meta = {
-            "uploader": m.get("uploader"),
-            "ip": m.get("ip"),
-        }
         file_info.append({
             "name": f,
             "size": size,
-            "meta": public_meta,
+            "meta": {
+                "uploader": m.get("uploader"),
+                "ip": m.get("ip")
+            }
         })
 
     return jsonify(file_info)
 
 
+# ---------------------------------------------------------
+# Run
+# ---------------------------------------------------------
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0")
+    app.run(debug=False, host="0.0.0.0", port=5000)

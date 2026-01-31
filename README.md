@@ -26,7 +26,7 @@ Each device is assigned a persistent ID:
 Your own uploads are highlighted in **blue**.
 > [!TIP]
 > If you want to get started fast, use the pre-builts from the releases page and run the **executable** in a folder.
-> The folder `assets` ***must*** exsist with a meta.json with the folowing contense: ```{}```
+> Anything in the **assets** folder will be loaded on the server.
 <details>
 
 <summary>Installing PyServe</summary>

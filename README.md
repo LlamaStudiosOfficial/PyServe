@@ -1,7 +1,6 @@
 # PyServe
 
-PyServe is a lightweight, local‑network file sharing server with a clean web dashboard, per‑device upload identification, secure delete passwords, and a modern UI.  
-It runs entirely on LAN so it does ***not*** go to any servers.
+PyServe is a lightweight, local‑network file sharing server with a clean web dashboard, per‑device upload identification, secure deletion, and a modern UI.  
 
 > [!CAUTION]
 > PyServe is intended for LAN use *only*.
@@ -13,7 +12,7 @@ It runs entirely on LAN so it does ***not*** go to any servers.
 
 - File Upload & Download
 - Secure Delete System
-`
+**Any device on the** ***same*** **Wi‑Fi network** can access the **PyServe server**.
 Your own uploads are highlighted in **blue**.
 > [!TIP]
 > If you want to get started fast, use the pre-builts from the releases page and run the **executable** in a folder.
@@ -56,7 +55,6 @@ Open the **address shown in the console**.Look for: `Running on http://`. The ad
 To find you ip run the command `ipconfig`.
 </details>
 
-**Any device on the** ***same*** **Wi‑Fi network** can access the **PyServe server**.
 ### Security:
 When a file is uploaded, the client sends its device ID.
 The server ***only*** lets the person who uploaded the file delete it.

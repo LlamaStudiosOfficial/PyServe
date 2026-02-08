@@ -12,7 +12,9 @@ PyServe is a lightweight, local‑network file sharing server with a clean web d
 
 - File Upload & Download
 - Secure Delete System
+
 **Any device on the** ***same*** **Wi‑Fi network** can access the **PyServe server**.
+
 Your own uploads are highlighted in **blue**.
 > [!TIP]
 > If you want to get started fast, use the pre-builts from the releases page and run the **executable** in a folder.

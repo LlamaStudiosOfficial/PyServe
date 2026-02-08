@@ -9,17 +9,11 @@ It runs entirely on LAN so it does ***not*** go to any servers.
 
 ---
 
-## ✨ Features
+## Features
 
-- 📁 File Upload & Download
-- 🔐 Secure Delete System
-
-
-### 🖥️ Per‑Device Identification
-Each device is assigned a persistent ID:
-```
-<platform>-<random>.hidden
-```
+- File Upload & Download
+- Secure Delete System
+`
 Your own uploads are highlighted in **blue**.
 > [!TIP]
 > If you want to get started fast, use the pre-builts from the releases page and run the **executable** in a folder.
@@ -28,9 +22,9 @@ Your own uploads are highlighted in **blue**.
 
 <summary>Installing PyServe</summary>
 
-## 🚀 Getting Started
+## Getting Started
 
-### 📦 1. Install dependencies
+### 1. Install dependencies
 PyServe requires these dependencies:
 - Flask
 
@@ -39,7 +33,7 @@ Install the dependencies by running this command:
 pip install flask
 ```
 
-### 📂 2. Add nesseserry files/folders
+### 2. Add nesseserry files/folders
 
 Download the repo using **git CLI**:
 ```git
@@ -50,13 +44,13 @@ or download directly:
 [download repo](https://github.com/LlamaStudiosOfficial/PyServe/archive/refs/heads/main.zip)
 
 
-### 🖥️ 3. Run the server
+### 3. Run the server
 
 ```bash
 python PyServe.py
 ```
 
-### 🚪 4. Access PyServe
+### 4. Access PyServe
 
 Open the **address shown in the console**.Look for: `Running on http://`. The address is usually `http://<your-local-ip>:5000`.
 To find you ip run the command `ipconfig`.
@@ -64,7 +58,7 @@ To find you ip run the command `ipconfig`.
 ---
 
 **Any device on the** ***same*** **Wi‑Fi network** can access the **PyServe server**.
-### 🔒 Security:
+### Security:
 When a file is uploaded, the client sends its device ID.
 The server ***only*** lets the person who uploaded the file delete it.
 This prevents unauthorized deletion on **shared PyServe Server**.

@@ -54,15 +54,13 @@ python PyServe.py
 
 Open the **address shown in the console**.Look for: `Running on http://`. The address is usually `http://<your-local-ip>:5000`.
 To find you ip run the command `ipconfig`.
-
----
+</details>
 
 **Any device on the** ***same*** **Wi‑Fi network** can access the **PyServe server**.
 ### Security:
 When a file is uploaded, the client sends its device ID.
 The server ***only*** lets the person who uploaded the file delete it.
 This prevents unauthorized deletion on **shared PyServe Server**.
-</details>
 
 ### 📝 License
 

@@ -62,6 +62,18 @@ When a file is uploaded, the client sends its device ID.
 The server ***only*** lets the person who uploaded the file delete it.
 This prevents unauthorized deletion on **shared PyServe Server**.
 
+## Linux Users
+
+  Sadly, **PyServe** is not available on linux, however **PyServe** can be run on linux using *wine*. First install wine using your system's package manager or flatpak.
+  To install using flatpak run:
+  ```bash
+  flatpak install flathub org.winehq.Wine
+  ```
+  Then to run **PyServe** run:
+  ```bash
+  wine PyServe.exe
+  ```
+
 ### 📝 License
 
-PyServe is licensed under the **MIT License**.
+PyServe is licensed under the [**MIT License**](LICENSE).

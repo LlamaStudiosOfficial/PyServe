@@ -51,7 +51,7 @@ or download directly:
 ### 3. Run the server
 
 ```bash
-python3 PyServe.py
+python PyServe.py
 ```
 
 ### 4. Access PyServe

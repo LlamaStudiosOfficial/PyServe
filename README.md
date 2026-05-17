@@ -27,11 +27,13 @@ Your own uploads are highlighted in **blue**.
 
 ### 1. Install dependencies
 PyServe requires these dependencies:
+
+- Python3
 - Flask
 
 Install the dependencies by running this command:
 ```bash
-pip install flask
+winget source update && winget install Python.Python.3.12 && py -m pip install --upgrade pip && py -m pip install flask
 ```
 
 ### 2. Add nesseserry files/folders
@@ -69,7 +71,9 @@ This prevents unauthorized deletion on **shared PyServe Server**.
   ```bash
   flatpak install flathub org.winehq.Wine
   ```
-  Then to run **PyServe** run:
+Next, [download the repo](https://github.com/LlamaStudiosOfficial/PyServe/archive/refs/heads/main.zip) to your device and unzip it.
+
+Then to run **PyServe** run:
   ```bash
   wine PyServe.exe
   ```

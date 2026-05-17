@@ -30,6 +30,7 @@ PyServe requires these dependencies:
 
 - Python3
 - Flask
+- Git \(optional\)
 
 Install the dependencies by running this command:
 ```bash
@@ -39,7 +40,7 @@ winget source update && winget install Git.Git && winget install Python.Python.3
 ### 2. Add nesseserry files/folders
 
 Download the repo using **git CLI**:
-```git
+```bash
 git clone https://github.com/LlamaStudiosOfficial/PyServe.git
 ```
 or download directly:
@@ -50,7 +51,7 @@ or download directly:
 ### 3. Run the server
 
 ```bash
-python PyServe.py
+python3 PyServe.py
 ```
 
 ### 4. Access PyServe

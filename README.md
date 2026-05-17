@@ -67,16 +67,16 @@ This prevents unauthorized deletion on **shared PyServe Server**.
 
 ## Linux Users
 
-  Sadly, **PyServe** is not available on linux, however **PyServe** can be run on linux using *wine*. First install wine using your system's package manager or flatpak.
-  To install using flatpak run:
+  Sadly, **PyServe** does not have a pre-built executable for linux, however **PyServe** can be run on linux using *python*. First install python using your system's package manager.
+  To install on **Fedora** run:
   ```bash
-  flatpak install flathub org.winehq.Wine
+  sudo dnf install python3
   ```
 Next, [download the repo](https://github.com/LlamaStudiosOfficial/PyServe/archive/refs/heads/main.zip) to your device and unzip it.
 
 Then to run **PyServe** run:
   ```bash
-  wine PyServe.exe
+  python PyServe.py
   ```
 
 ### 📝 License

@@ -33,7 +33,7 @@ PyServe requires these dependencies:
 
 Install the dependencies by running this command:
 ```bash
-winget source update && winget install Python.Python.3.12 && py -m pip install --upgrade pip && py -m pip install flask
+winget source update && winget install Git.Git && winget install Python.Python.3.12 && set "PATH=%PATH%;C:\Users\%USERNAME%\AppData\Local\Programs\Python\Python312;C:\Users\%USERNAME%\AppData\Local\Programs\Python\Python312\Scripts" && py -m pip install --upgrade pip && py -m pip install flask
 ```
 
 ### 2. Add nesseserry files/folders
